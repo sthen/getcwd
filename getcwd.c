@@ -17,10 +17,16 @@
 
 #include <sys/param.h>
 #include <sys/sysctl.h>
+
+#include <err.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vis.h>
+#include <unistd.h>
 #include <wchar.h>
+
+void mbswprint(const char *);
+void curwd(pid_t);
 
 void
 mbswprint(const char *mbs)
@@ -61,7 +67,7 @@ curwd(pid_t pid)
 	size_t pathlen = sizeof path;
 
 	if (sysctl(name, 3, path, &pathlen, NULL, 0) != 0)
-		*path = '\0';
+		err(EXIT_FAILURE, "sysctl: %d", pid);
 
 	mbswprint(path);
 }
@@ -72,16 +78,17 @@ main(int argc, char *argv[])
 	int pid;
 	const char *errstr;
 
-	if (argc != 2) {
-		printf("usage: getcwd <pid>\n");
-		return(1);
-	}
+	if (pledge("stdio ps", "") == -1)
+		err(EXIT_FAILURE, "pledge");
+
+	if (argc != 2)
+		errx(EXIT_FAILURE, "usage: getcwd <pid>");
 
 	pid = strtonum(argv[1], 1, UINT_MAX, &errstr);
-	if (errstr != NULL) {
-		printf("pid is %s: %s\n", errstr, argv[0]);
-		return(1);
-	}
+	if (errstr != NULL)
+		errx(EXIT_FAILURE, "pid is %s: %s", errstr, argv[0]);
 
 	curwd(pid);
+
+	return EXIT_SUCCESS;
 }
