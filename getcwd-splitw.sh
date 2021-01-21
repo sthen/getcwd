@@ -1,5 +1,10 @@
 #!/bin/ksh
 
+# .tmuxrc example:
+#
+# bind-key '"' run-shell -b "getcwd-splitw #{?pane_active,#{pane_pid},} -v"
+# bind-key '%' run-shell -b "getcwd-splitw #{?pane_active,#{pane_pid},} -h"
+
 error() {
 	echo "$*" >&2 && exit 1
 }
