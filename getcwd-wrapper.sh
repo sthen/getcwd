@@ -1,5 +1,11 @@
 #!/bin/ksh
 
+# .tmuxrc example:
+#
+# bind-key '"' run-shell -b "getcwd-wrapper #{?pane_active,#{pane_pid},} split-window -v"
+# bind-key '%' run-shell -b "getcwd-wrapper #{?pane_active,#{pane_pid},} split-window -h"
+# bind-key 'C' run-shell -b "getcwd-wrapper #{?pane_active,#{pane_pid},} new-window"
+
 error() {
 	echo "$*" >&2 && exit 1
 }
