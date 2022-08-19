@@ -1,6 +1,6 @@
 PROG =	getcwd
 NOMAN =	getcwd
-SCRIPT = getcwd-splitw.sh
+SCRIPT = getcwd-splitw getcwd-wrapper
 
 WARNINGS = Yes
 
@@ -9,7 +9,9 @@ BINOWN ?!=	id -un
 BINGRP ?!=	id -gn
 
 afterinstall:
+.for F in ${SCRIPT}
 	${INSTALL} ${INSTALL_COPY} -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} \
-		${.CURDIR}/${SCRIPT} ${DESTDIR}${BINDIR}/getcwd-splitw
+		${.CURDIR}/${F}.sh ${DESTDIR}${BINDIR}/${F}
+.endfor
 
 .include <bsd.prog.mk>
